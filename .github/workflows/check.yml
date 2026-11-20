@@ -5,6 +5,9 @@ on:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -21,3 +24,10 @@ jobs:
           LMS_URL: ${{ secrets.LMS_URL }}
           LMS_EMAIL: ${{ secrets.LMS_EMAIL }}
           LMS_PASSWORD: ${{ secrets.LMS_PASSWORD }}
+      - name: Save last.txt
+        run: |
+          git config user.name "lms-bot"
+          git config user.email "bot@lms.local"
+          git add last.txt || true
+          git diff --cached --quiet || git commit -m "Update last.txt"
+          git push || true
